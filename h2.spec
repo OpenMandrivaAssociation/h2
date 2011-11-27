@@ -1,6 +1,6 @@
 Name:           h2
 Version:        1.2.145
-Release:        4
+Release:        6
 Summary:        Java SQL database
 
 Group:          Development/Java
