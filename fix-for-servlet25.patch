@@ -1,0 +1,21 @@
+--- TestServlet.java.sav	2010-11-23 09:19:49.336313428 -0600
++++ TestServlet.java	2010-11-23 09:30:10.213626677 -0600
+@@ -7,6 +7,7 @@
+ package org.h2.test.unit;
+ 
+ import java.io.InputStream;
++import java.lang.UnsupportedOperationException;
+ import java.net.URL;
+ import java.sql.Connection;
+ import java.sql.DriverManager;
+@@ -58,6 +59,10 @@
+             return attributes.get(key);
+         }
+ 
++	public String getContextPath() {
++	    throw new UnsupportedOperationException();
++        }
++
+         /**
+          * Set an initialization parameter.
+          *
