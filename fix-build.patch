@@ -1,0 +1,20 @@
+--- Build.java.sav	2012-07-13 17:04:34.000000000 +0300
++++ Build.java	2012-07-23 11:47:00.693965953 +0300
+@@ -150,12 +150,12 @@ public class Build extends BuildBase {
+         switchSource(debugInfo);
+         clean();
+         mkdir("temp");
+-        download();
+         String classpath = "temp" +
+-                File.pathSeparator + "ext/servlet-api-2.4.jar" +
+-                File.pathSeparator + "ext/" + getLuceneJar() +
+-                File.pathSeparator + "ext/slf4j-api-1.6.0.jar" +
+-                File.pathSeparator + "ext/org.osgi.core-1.2.0.jar" +
++        		File.pathSeparator + "/usr/share/java/servlet.jar" +
++        		File.pathSeparator + "/usr/share/java/lucene.jar" +
++        		File.pathSeparator + "/usr/share/java/lucene-contrib/lucene-analysis.jar" +
++        		File.pathSeparator + "/usr/share/java/slf4j/api.jar" +
++        		File.pathSeparator + "/usr/share/java/felix/org.osgi.core.jar" +
+                 File.pathSeparator + System.getProperty("java.home") + "/../lib/tools.jar";
+         FileList files;
+         if (clientOnly) {
