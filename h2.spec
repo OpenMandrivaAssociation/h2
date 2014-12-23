@@ -1,24 +1,24 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           h2
-Version:        1.3.168
-Release:        4.0%{?dist}
+Version:        1.3.176
+Release:        2.1
 Summary:        Java SQL database
-
-
+Group:		Databases
 License:        EPL
 URL:            http://www.h2database.com
-Source0:        http://www.h2database.com/h2-2012-07-13.zip
+Source0:        http://www.h2database.com/h2-2014-04-05.zip
 Source1:        http://repo2.maven.org/maven2/com/h2database/h2/%{version}/h2-%{version}.pom
-Patch1:         fix-build.patch
+Patch0:         fix-build.patch
+Patch1:         rm-osgi-jdbc-service.patch
+Patch2:         fix-broken-tests.patch
 BuildArch: noarch
 BuildRequires: java-devel >= 1:1.5.0
 BuildRequires:  ant
-BuildRequires:  lucene >= 2.4
-BuildRequires:  lucene-contrib
+BuildRequires:  lucene3
 BuildRequires:  slf4j >= 1.5
 BuildRequires:  felix-osgi-core >= 1.2
 BuildRequires:  servlet3
-Requires: java >= 1:1.5.0
+BuildRequires:  jts
 
 %description
 H2 is a the Java SQL database. The main features of H2 are:
@@ -30,22 +30,27 @@ H2 is a the Java SQL database. The main features of H2 are:
 %package javadoc
 Summary:        Javadocs for %{name}
 
-Requires:       jpackage-utils
-
 %description javadoc
 This package contains the API documentation for %{name}.
 
 %prep
 %setup -q -n %{name}
 pushd src/test/org/h2/test/unit
-rm -fr TestServlet.java
+rm TestServlet.java
 popd
-pushd src/tools/org/h2/build
-%patch1 
-popd
-find -name '*.orig' -exec rm -f '{}' \;
+%patch0
+%patch2
+
+# Because no Fedora package provides org.osgi.service.jdbc interfaces yet
+%patch1
+rm src/main/org/h2/util/OsgiDataSourceFactory.java
+sed -i '/org.osgi.service.jdbc/d' src/main/META-INF/MANIFEST.MF
+
+# Delete pre-built binaries
 find -name '*.class' -exec rm -f '{}' \;
 find -name '*.jar' -exec rm -f '{}' \;
+
+sed -i -e 's|authenticated|authenticate authenticated|' src/tools/org/h2/build/doc/dictionary.txt
 
 %build
 export JAVA_HOME=%{java_home}
@@ -65,10 +70,7 @@ mkdir -p $RPM_BUILD_ROOT%{_mavenpomdir}
 cp -rp %SOURCE1 $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
 %add_maven_depmap JPP-%{name}.pom %{name}.jar
 
-%files
-%{_javadir}/*
-%{_mavenpomdir}/*
-%{_mavendepmapfragdir}/*
+%files -f .mfiles
 %doc src/docsrc/html/license.html
 
 %files javadoc
@@ -76,6 +78,21 @@ cp -rp %SOURCE1 $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
 %doc src/docsrc/html/license.html
 
 %changelog
+* Fri Jun 13 2014 Mat Booth <mat.booth@redhat.com> - 1.3.176-2
+- Fix erroneous osgi dep on org.osgi.service.jdbc
+
+* Wed Jun 11 2014 Mat Booth <mat.booth@redhat.com> - 1.3.176-1
+- Update to latest upstream stable release
+- Fix lucene BRs
+- Patch to remove implementation of non-existant inferface
+- Patch to fix tests broken by new servlet API
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.168-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri Feb 21 2014 Alexander Kurtakov <akurtako@redhat.com> 1.3.168-5
+- Require java-headless.
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.3.168-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
@@ -120,3 +137,4 @@ cp -rp %SOURCE1 $RPM_BUILD_ROOT%{_mavenpomdir}/JPP-%{name}.pom
 
 * Wed Nov 17 2010 Chris Aniszczyk <zx@redhat.com> 1.2.145-1
 - Initial packaging
+
