@@ -1,7 +1,7 @@
 %{?_javapackages_macros:%_javapackages_macros}
 Name:           h2
 Version:        1.3.176
-Release:        2.1
+Release:        2.2
 Summary:        Java SQL database
 Group:		Databases
 License:        EPL
