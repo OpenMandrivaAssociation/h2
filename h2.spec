@@ -5,7 +5,7 @@ Release:        2.3
 Summary:        Java SQL database
 Group:		Databases
 License:        EPL
-URL:            http://www.h2database.com
+URL:            https://www.h2database.com
 Source0:        http://www.h2database.com/h2-2014-04-05.zip
 Source1:        http://repo2.maven.org/maven2/com/h2database/h2/%{version}/h2-%{version}.pom
 Patch0:         fix-build.patch
